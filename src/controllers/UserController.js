@@ -9,15 +9,18 @@ class UserController {
     const database = await sqliteConnection();
 
     const checkUserExists = await database.get("SELECT * FROM users WHERE email = (?)", [email])
+    
+    if (!name) {
+     throw new AppError("Nome é obrigatório");
+   }
 
     if(checkUserExists){
       throw new AppError("Email já está em uso")
     }
 
+    await database.run("INSERT INTO users (name, email, password) VALUES (?,?,?)",[name, email, password])
 
-     if (!name) {
-      throw new AppError("Nome é obrigatório");
-    }
+
 
     return responde.status(201).json()
  
