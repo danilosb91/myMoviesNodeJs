@@ -27,6 +27,7 @@ class UserController {
     return responde.status(201).json()
  
   }
+  // Fim do cadastro de usuário.
 
   async update(request, responde){
     const { name, email } = request.body;
@@ -38,17 +39,22 @@ class UserController {
     if(!user){
       throw new AppError("Usuário não encontrado")
     }
-    
+    // verifica se o email existe no banco. 
     const userWithUpdatedEmail = await database.get("SELECT * FROM users WHERE email = (?)", [email]) 
+    console.log(userWithUpdatedEmail  )
     
-    //Verificar se o email no banco e o ID do banco são iguais ID enviado pelos parâmetros
-    if(userWithUpdatedEmail && userWithUpdatedEmail.id !== id ){
+    //Verifica se o email existe && Verifica se o ID do banco é igual ao ID informado
+    if(userWithUpdatedEmail && userWithUpdatedEmail.id !== user.id ){
       throw new AppError("Está email já está em uso")
-      console.log(userWithUpdatedEmail)
     }
-
+    
     user.name = name;
     user.email = email;
+
+    if(password && !old_password){
+      throw new AppError("Informar a senha antiga para definir a nova senha")
+    }
+
 
     await database.run(`
     UPDATE users SET
