@@ -1,7 +1,7 @@
 const knex = require("../database/knex");
 
 class MovieNotesController {
-  async create(request, responde) {
+  async create(request, response) {
     const { title, description, rating, tags } = request.body;
     const { user_id } = request.params;
 
@@ -22,8 +22,22 @@ class MovieNotesController {
 
     await knex("movieTags").insert(tagsInsert);
 
-    responde.json();
+    response.json();
   }
+// Fim do cadastro de notas
+  async show(request, response){
+    const { id } = request.params;
+
+    const note = await knex("movieNotes").where({id}).first();
+    const tags = await knex("movieTags").where({movieNotes_id: id}).orderBy("name");
+
+    return response.json({
+      ...note,
+      tags
+    })
+  }
+
+
 }
 
 module.exports = MovieNotesController;

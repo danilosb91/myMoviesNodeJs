@@ -3,7 +3,7 @@ const AppError = require("../utils/AppError");
 const sqliteConnection = require('../database/sqlite')
 
 class UserController {
-  async create(request, responde) {
+  async create(request, response) {
     const { name, email, password} = request.body;
 
     const database = await sqliteConnection();
@@ -24,7 +24,7 @@ class UserController {
 
 
 
-    return responde.status(201).json()
+    return response.status(201).json()
  
   }
   // Fim do cadastro de usuário.
